@@ -3,3 +3,4 @@ db/*.json
 config.php
 .idea
 log/*
+composer.phar
