@@ -6,10 +6,12 @@
     "teaser": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Korb_mit_Br%C3%B6tchen.JPG/320px-Korb_mit_Br%C3%B6tchen.JPG",
     "products": [
       {
+        "id": "vollkornbrot",
         "name": "Vollkornbrot",
         "price": 2.10
       },
       {
+        "id": "schrippe",
         "name": "Schrippen",
         "price": 0.20
       }
