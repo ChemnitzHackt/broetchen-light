@@ -7,7 +7,7 @@ class Log
   private static $file;
 
   public static function start() {
-    self::$file = ROOT_DIR.'/log/'.date('Y-m.log');
+    self::$file = ROOT_DIR.'/log/'.date('Y-m').'.log';
   }
 
   private static function log($msg) {

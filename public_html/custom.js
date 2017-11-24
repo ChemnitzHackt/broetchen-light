@@ -25,16 +25,22 @@ loginMask.submit((e) => {
 
     const email_address = $('input[name=email]').val()
     const password = $('input[name=password]').val()
-    $.post('/api/login', JSON.stringify({email_address, password})).then(
-        (data) => {
+    $.post('/api/login', JSON.stringify({email_address, password}))
+        .then((data) => {
             if (data.sessionid) {
                 sessionid = data.sessionid
                 loggedIn = true
                 loginMask.hide()
                 mainMask.show()
-
+                flashSuccess("Erfolgreich angemeldet.")
                 loadOrders()
+            } else {
+                flashError("E-Mail oder Passwort falsch.")
             }
+        })
+        .fail((err) => {
+            // console.error(err)
+            flashError("E-Mail oder Passwort falsch. ")
         })
 })
 
@@ -51,11 +57,12 @@ gesamtPreis.on('update', () => {
     productsList.find('.kosten').each((idx, el) => {
         gesamtkosten+= $(el).data('value')
     })
+    gesamtPreis.data('value', gesamtkosten)
     gesamtPreis.html(preisFormatter.format(gesamtkosten))
 })
 
-$.get('/api/services').then(
-    (data) => {
+$.get('/api/services')
+    .then((data) => {
 //          console.log("services", data)
 //          serviceList.empty()
         productsList.empty()
@@ -94,24 +101,32 @@ $.get('/api/services').then(
              </div>
              </div>`)*/
         })
-    }
-)
+    })
+    .fail((err) => {
+        // console.error(err)
+        flashError("Fehler beim lesen der Produkte.")
+    })
 
 function loadOrders() {
-    $.get('/api/orders/'+sessionid).then(
-        (data) => {
+    $.get('/api/orders/'+sessionid)
+        .then((data) => {
 //          console.log("orders", data)
             productsList.find('tr[data-id]').each((idx, el) => {
                 const product = $(el)
 //            console.log("order tr", el, product)
                 const id = product.data('id')
                 if (data.broetchen[id]) {
-//              console.log("set order", id, data.broetchen[id])
-                    product.find('.anzahl').val(data.broetchen[id]).trigger('change')
+//                    console.log("set order", id, data.broetchen[id])
+                    const anzahl = data.broetchen[id].anzahl
+                    product.find('.anzahl').val(anzahl).trigger('change')
                 }
             })
-        }
-    )
+        })
+        .fail((err) => {
+            // console.error(err)
+            flashError("Fehler beim lesen der bisherigen Bestellung.")
+        })
+
 }
 
 $('#btnBestellen').click(() => {
@@ -120,8 +135,10 @@ $('#btnBestellen').click(() => {
         const product = $(el)
         const id = product.data('id')
         const anzahl = product.find('.anzahl').val()
-        orders[id] = anzahl
+        const kosten = product.find('.kosten').data('value')
+        orders[id] = {anzahl, kosten}
     })
+    orders.gesamt = gesamtPreis.data('value')
     const payload = {
         sessionid,
         orders: {
@@ -129,10 +146,15 @@ $('#btnBestellen').click(() => {
         }
     }
 //      console.log("set order", payload)
-    $.post('/api/orders', JSON.stringify(payload)).then(
-        () => {
+    $.post('/api/orders', JSON.stringify(payload))
+        .then(() => {
             flashSuccess("Es wurde eine E-Mail mit Ihrer Bestellung versendet.")
         })
+        .fail((err) => {
+            // console.error(err)
+            flashError("Fehler beim speichern der Bestellung.")
+        })
+
 })
 
 

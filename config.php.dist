@@ -1,6 +1,9 @@
 <?php
 
 return [
+    'sender_email' => '?@?', // der technische Account der rausschickt
+    'receiver_email' => '?@?', // der der die Brötchen bringt
+
     'smtp_server' => 'smtp.example.org', // e.g. smtp.gmail.com
     'smtp_port' => 465, // SSL only
     'smtp_user' => '?',
