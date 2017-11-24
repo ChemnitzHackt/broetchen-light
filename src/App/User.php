@@ -12,7 +12,7 @@ class User {
         }
     }
 
-    public function isValid(string $email, string $password) {
+    public function isValid($email, $password) {
         $users = json_decode(file_get_contents($this->file), true);
         $myusers = array_filter($users, function($n) use ($email, $password) {
             return $n['email'] == $email && $n['password'] == $password;
@@ -20,7 +20,7 @@ class User {
         return count($myusers) == 1 ? $myusers[0] : false;
     }
 
-    public function getBySession(string $session) {
+    public function getBySession($session) {
         $users = json_decode(file_get_contents($this->file), true);
         $myusers = array_filter($users, function($n) use ($session) {
             return md5($n['email']) == $session;
