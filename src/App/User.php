@@ -17,6 +17,7 @@ class User {
         $myusers = array_filter($users, function($n) use ($email, $password) {
             return $n['email'] == $email && $n['password'] == $password;
         });
+        $myusers = array_values($myusers); // Index durchsortieren
         return count($myusers) == 1 ? $myusers[0] : false;
     }
 
@@ -25,6 +26,7 @@ class User {
         $myusers = array_filter($users, function($n) use ($session) {
             return md5($n['email']) == $session;
         });
+        $myusers = array_values($myusers); // Index durchsortieren
         return count($myusers) == 1 ? $myusers[0] : false;
     }
 }
