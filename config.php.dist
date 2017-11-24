@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'smtp_server' => 'smtp.example.org',
+    'smtp_server' => 'smtp.example.org', // e.g. smtp.gmail.com
     'smtp_port' => 465, // SSL only
     'smtp_user' => '?',
     'smtp_password' => '?',

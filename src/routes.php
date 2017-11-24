@@ -2,6 +2,9 @@
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use App\User;
+use App\Order;
+use App\Mailer as OrderMailer;
+use App\Log;
 
 $app->get('/', function (Request $request, Response $response) {
    $response->getBody()->write(file_get_contents('frontend.html'));
@@ -19,11 +22,13 @@ $app->group('/api', function () use ($app) {
         if (empty($params['email_address']) || empty($params['password'])) {
             return $response->withJson(['error' => 'Email or Pwd empty'], 400);
         }
-        $user = new \App\User;
+        $user = new User;
         $myuser = $user->isValid($params['email_address'], $params['password']);
         if ($myuser) {
+            Log::login($params['email_address'], true);
             return $response->withJson(['sessionid' => md5($myuser['email'])]);
         } else {
+            Log::login($params['email_address'], false);
             return $response->withJson(['error' => 'User not found'], 401);
         }
     });
@@ -43,7 +48,7 @@ $app->group('/api', function () use ($app) {
         if (empty($params['sessionid'])) {
             return $response->withJson(['error' => 'Session needed'], 400);
         }
-        $user = new \App\User;
+        $user = new User;
         $myuser = $user->getBySession($params['sessionid']);
         if (!$myuser) {
             return $response->withJson(['error' => 'User not found'], 401);
@@ -67,28 +72,15 @@ $app->group('/api', function () use ($app) {
         if (empty($params['orders'])) {
             return $response->withJson(['error' => 'Orders needed'], 400);
         }
-        $user = new \App\User;
+        $user = new User;
         $myuser = $user->getBySession($params['sessionid']);
         if (!$myuser) {
             return $response->withJson(['error' => 'User not found'], 401);
         }
-        $json = ROOT_DIR.'/db/orders-'.$myuser['email'].'.json';
-        file_put_contents($json, json_encode($params['orders'], JSON_PRETTY_PRINT));
+        $order = new Order;
+        $order->saveOrder($myuser['email'], $params['orders']);
 
-        /**
-         * Mail versenden
-         */
-        $config = require(ROOT_DIR.'/config.php');
-        $transport = (new Swift_SmtpTransport($config['smtp_server'], $config['smtp_port'], 'ssl'))
-          ->setUsername($config['smtp_user'])
-          ->setPassword($config['smtp_password'])
-          ->setStreamOptions(array('ssl' => array('allow_self_signed' => true, 'verify_peer' => false)));
-        $mailer = new Swift_Mailer($transport);
-        $message = (new Swift_Message('Brötchen Bestellung von '.$myuser['email']))
-          ->setFrom(['rha@mailbox.org' => 'Brötchen Mailer'])
-          ->setTo(['ronny@rh-flow.de'])
-          ->setBody('Hier ist die Bestellung von '.$myuser['email'].': '."\n".print_r($params['orders'],1));
-        $result = $mailer->send($message, $failures);
-        print_r($failures);
+        $mailer = new OrderMailer;
+        $mailer->sendOrder($myuser['email'], $params['orders']);
     });
 });
