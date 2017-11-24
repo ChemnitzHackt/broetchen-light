@@ -80,6 +80,7 @@ $.get('/api/services')
             anzahl.val("0")
             const kosten = product.find('.kosten')
             anzahl.change(() => {
+                if (anzahl.val() < 0) anzahl.val(0)
 //              console.log("kosten", kosten, anzahl, parseInt(anzahl.val()), el.price)
                 const preis = parseInt(anzahl.val()) * el.price
                 const preis_gerundet = Math.round(preis * 100, 2) / 100
@@ -124,7 +125,7 @@ function loadOrders() {
         })
         .fail((err) => {
             // console.error(err)
-            flashError("Fehler beim lesen der bisherigen Bestellung.")
+            flashError("Es liegt noch keine Bestellung vor.")
         })
 
 }
