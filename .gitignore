@@ -1,0 +1,4 @@
+vendor
+db/*.json
+config.php
+.idea

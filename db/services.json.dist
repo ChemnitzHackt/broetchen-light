@@ -1,0 +1,42 @@
+[
+  {
+    "id": "broetchen",
+    "name": "Raphaels Brötchendienst",
+    "description": "Brötchenbringedienst",
+    "teaser": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Korb_mit_Br%C3%B6tchen.JPG/320px-Korb_mit_Br%C3%B6tchen.JPG",
+    "products": [
+      {
+        "name": "Vollkornbrot",
+        "price": 2.10
+      },
+      {
+        "name": "Schrippen",
+        "price": 0.20
+      }
+    ]
+  },
+  {
+    "id": "maehen",
+    "name": "Raphaels Mähdienst",
+    "description": "Ich bringe Ihren Rasen in Ordnung.",
+    "teaser": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/Rasenmaeher.jpg/320px-Rasenmaeher.jpg",
+    "products": [
+      {
+        "name": "Samstags mähen",
+        "price": 5.00
+      }
+    ]
+  },
+  {
+    "id": "zeitung",
+    "name": "Raphaels Zeitungsdienst",
+    "description": "Ich bringe Ihre Zeitung.",
+    "teaser": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/Rasenmaeher.jpg/320px-Rasenmaeher.jpg",
+    "products": [
+      {
+        "name": "Samstags mähen",
+        "price": 5.00
+      }
+    ]
+  }
+]
