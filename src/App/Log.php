@@ -12,7 +12,7 @@ class Log
 
   private static function log($msg) {
     $row = date('Y-m-d H:i:s').' - '.$msg;
-    file_put_contents(self::$file, "\n".$row, FILE_APPEND);
+    file_put_contents(self::$file, $row."\n", FILE_APPEND);
   }
 
   public static function login($email, $success)
