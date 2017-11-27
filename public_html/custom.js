@@ -125,7 +125,9 @@ $('#btnBestellen').click(() => {
         const name = product.data('name')
         const anzahl = product.find('.anzahl').val()
         const kosten = product.find('.kosten').data('value')
-        orders[name] = {anzahl, kosten}
+        if (anzahl > 0) {
+          orders[name] = {anzahl, kosten}
+        }
     })
     orders.gesamt = gesamtPreis.data('value')
     const payload = {
