@@ -1,7 +1,11 @@
 <?php
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use App\{User, Order, Mailer as OrderMailer, Log, Config};
+use App\User;
+use App\Order;
+use App\Mailer as OrderMailer;
+use App\Log;
+use App\Config;
 
 $app->get('/', function (Request $request, Response $response) {
     $content = file_get_contents('frontend.html');
