@@ -1,14 +1,13 @@
 <?php
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use App\User;
-use App\Order;
-use App\Mailer as OrderMailer;
-use App\Log;
+use App\{User, Order, Mailer as OrderMailer, Log, Config};
 
 $app->get('/', function (Request $request, Response $response) {
-   $response->getBody()->write(file_get_contents('frontend.html'));
-   return $response;
+    $content = file_get_contents('frontend.html');
+    $content = str_replace('#project_name#', Config::get('project_name'), $content);
+    $response->getBody()->write($content);
+    return $response;
 });
 
 $app->group('/api', function () use ($app) {

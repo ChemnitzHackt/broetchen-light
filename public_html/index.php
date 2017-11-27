@@ -9,6 +9,7 @@ define('ROOT_DIR', __DIR__.'/..');
 require ROOT_DIR.'/vendor/autoload.php';
 
 App\Log::start();
+App\Config::load();
 
 $app = new \Slim\App;
 include ROOT_DIR.'/src/cors.php';

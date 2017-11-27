@@ -10,13 +10,12 @@ class Mailer
 
   public function __construct()
   {
-    $config = require(ROOT_DIR.'/config.php');
-    $this->senderEmail = $config['sender_email'];
-    $this->receiverEmail = $config['receiver_email'];
+    $this->senderEmail = Config::get('sender_email');
+    $this->receiverEmail = Config::get('receiver_email');
 
-    $transport = (new \Swift_SmtpTransport($config['smtp_server'], $config['smtp_port'], 'ssl'))
-      ->setUsername($config['smtp_user'])
-      ->setPassword($config['smtp_password'])
+    $transport = (new \Swift_SmtpTransport(Config::get('smtp_server'), Config::get('smtp_port'), 'ssl'))
+      ->setUsername(Config::get('smtp_user'))
+      ->setPassword(Config::get('smtp_password'))
       ->setStreamOptions(['ssl' => ['allow_self_signed' => true, 'verify_peer' => false]]);
     $this->mailer = new \Swift_Mailer($transport);
   }
