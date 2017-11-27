@@ -1,6 +1,6 @@
 vendor
 db/*.json
-config.php
+/config.php
 .idea
 log/*
 composer.phar
