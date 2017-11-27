@@ -26,10 +26,24 @@ class Mailer
     $message = (new \Swift_Message($subject))
       ->setFrom([$this->senderEmail => 'Brötchen Mailer'])
       ->setTo([$this->receiverEmail])
-      ->setBody('Hier ist die Bestellung von '.$email.': '."\n".print_r($order,1));
+      ->setBody($this->formatBody($email, $order), 'text/html');
     $failures = [];
     $this->mailer->send($message, $failures);
     Log::mail($this->receiverEmail, $subject, $failures);
     return empty($failures);
+  }
+
+  private function formatBody($email, $order)
+  {
+    $order = $order['broetchen'];
+    $gesamtkosten = 0.0;
+    $liste = array_map(function($name) use ($order, &$gesamtkosten) {
+        if ($name == 'gesamt') return '';
+        $gesamtkosten+= floatval($order[$name]['kosten']);
+        return "<tr><td>".$name."</td><td>".$order[$name]['anzahl']." Stück</td><td>".number_format($order[$name]['kosten'], 2, ',', '')." €</td></tr>";
+    }, array_keys($order));
+    return 'Hier ist die Bestellung von '.$email.': '."\n<br/><br/>"
+        ."\n<table>".implode("\n", $liste)."</table>"
+        ."\n\n<br/><br/>Gesamtkosten: ".number_format($gesamtkosten, 2, ',', '')." €";
   }
 }

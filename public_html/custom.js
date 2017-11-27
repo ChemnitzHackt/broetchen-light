@@ -68,7 +68,7 @@ $.get('/api/services')
 
             const stueckpreis = preisFormatter.format(el.price)
             const product = $(`
-                    <tr data-name="${el.name}">
+                    <tr class="order" data-name="${el.name}">
                         <td>${el.name} zu je ${stueckpreis}</td>
                         <td><input type="number" class="anzahl" size="3" value=""></td>
                         <td class="nowrap"><span class="kosten"></span></td>
@@ -100,7 +100,7 @@ function loadOrders() {
     $.get('/api/orders/'+sessionid)
         .then((data) => {
 //          console.log("orders", data)
-            productsList.find('tr[data-name]').each((idx, el) => {
+            productsList.find('tr.order').each((idx, el) => {
                 const product = $(el)
 //            console.log("order tr", el, product)
                 const name = product.data('name')
@@ -120,7 +120,7 @@ function loadOrders() {
 
 $('#btnBestellen').click(() => {
     orders = {}
-    productsList.find('tr[data-name]').each((idx, el) => {
+    productsList.find('tr.order').each((idx, el) => {
         const product = $(el)
         const name = product.data('name')
         const anzahl = product.find('.anzahl').val()
