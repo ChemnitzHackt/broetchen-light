@@ -2,7 +2,6 @@ let loggedIn = false
 let sessionid = null
 const loginMask = $('#loginMask')
 const mainMask = $('#mainMask')
-//    const serviceList = $('#services')
 const productsList = $('#products')
 const preisFormatter = new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' })
 const gesamtPreis = $('table tfoot .gesamt')
@@ -63,18 +62,16 @@ gesamtPreis.on('update', () => {
 
 $.get('/api/services')
     .then((data) => {
-//          console.log("services", data)
-//          serviceList.empty()
         productsList.empty()
         data[0].products.forEach((el) => {
 //            console.log(el)
 
             const stueckpreis = preisFormatter.format(el.price)
             const product = $(`
-                    <tr data-id="${el.id}">
+                    <tr data-name="${el.name}">
                         <td>${el.name} zu je ${stueckpreis}</td>
                         <td><input type="number" class="anzahl" size="3" value=""></td>
-                        <td><span class="kosten"></span></td>
+                        <td class="nowrap"><span class="kosten"></span></td>
                     </tr>`)
             const anzahl = product.find('.anzahl')
             anzahl.val("0")
@@ -92,15 +89,6 @@ $.get('/api/services')
             anzahl.on('keyup', () => anzahl.trigger('change'))
 
             productsList.append(product)
-            /*serviceList.add(`
-             <div class="card" style="width: 20rem;">
-             <img class="card-img-top" src="${el.teaser}" alt="${el.name}">
-             <div class="card-body">
-             <h4 class="card-title">${el.name}</h4>
-             <p class="card-text">${el.description}</p>
-             <a href="#" class="btn btn-primary">${Verwalten}</a>
-             </div>
-             </div>`)*/
         })
     })
     .fail((err) => {
@@ -112,13 +100,13 @@ function loadOrders() {
     $.get('/api/orders/'+sessionid)
         .then((data) => {
 //          console.log("orders", data)
-            productsList.find('tr[data-id]').each((idx, el) => {
+            productsList.find('tr[data-name]').each((idx, el) => {
                 const product = $(el)
 //            console.log("order tr", el, product)
-                const id = product.data('id')
-                if (data.broetchen[id]) {
-//                    console.log("set order", id, data.broetchen[id])
-                    const anzahl = data.broetchen[id].anzahl
+                const name = product.data('name')
+                if (data.broetchen[name]) {
+//                    console.log("set order", name, data.broetchen[name])
+                    const anzahl = data.broetchen[name].anzahl
                     product.find('.anzahl').val(anzahl).trigger('change')
                 }
             })
@@ -132,12 +120,12 @@ function loadOrders() {
 
 $('#btnBestellen').click(() => {
     orders = {}
-    productsList.find('tr[data-id]').each((idx, el) => {
+    productsList.find('tr[data-name]').each((idx, el) => {
         const product = $(el)
-        const id = product.data('id')
+        const name = product.data('name')
         const anzahl = product.find('.anzahl').val()
         const kosten = product.find('.kosten').data('value')
-        orders[id] = {anzahl, kosten}
+        orders[name] = {anzahl, kosten}
     })
     orders.gesamt = gesamtPreis.data('value')
     const payload = {
@@ -149,11 +137,11 @@ $('#btnBestellen').click(() => {
 //      console.log("set order", payload)
     $.post('/api/orders', JSON.stringify(payload))
         .then(() => {
-            flashSuccess("Es wurde eine E-Mail mit Ihrer Bestellung versendet.")
+            flashSuccess("Es wurde eine E-Mail mit Ihrer Bestellungsaktualisierung versendet.")
         })
         .fail((err) => {
             // console.error(err)
-            flashError("Fehler beim speichern der Bestellung.")
+            flashError("Fehler beim Speichern der Bestellung.")
         })
 
 })

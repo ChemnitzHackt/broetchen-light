@@ -1,4 +1,4 @@
-tbody td {
+tbody td.nowrap {
     white-space: nowrap;
 }
 input[type=number] {
@@ -13,4 +13,10 @@ footer {
 footer a {
     color: gray;
     text-decoration: underline;
+}
+
+.flash {
+    position: fixed;
+    top: 20px;
+
 }
